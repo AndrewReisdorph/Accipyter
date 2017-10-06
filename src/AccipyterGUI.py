@@ -1,13 +1,15 @@
 import wxversion
 wxversion.select("3.0")
 import wx
+import base64
+import cStringIO
 
 import Images
 import AccipyterConstants
 import SuperListCtrl
 import Torrent
-import TorrentReader
 import TorrentFileSelectWindow
+
 
 class FileDropTarget(wx.FileDropTarget):
     def __init__(self, target):
@@ -18,24 +20,30 @@ class FileDropTarget(wx.FileDropTarget):
         for fname in filenames:
             print fname
 
+
 class PageOne(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
         t = wx.StaticText(self, -1, "This is a PageOne object", (20,20))
 
+
 class AccipyterGUI(wx.Frame):
 
     def __init__(self):
         frame_style = wx.MAXIMIZE_BOX | wx.MINIMIZE_BOX | wx.RESIZE_BORDER | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX
-        super(AccipyterGUI, self).__init__(None, style=frame_style, title='Accipyter', size=(800,600))
+        super(AccipyterGUI, self).__init__(None, style=frame_style, title='Accipyter', size=(800, 600))
 
+        self.main_panel = None
         self.init_ui()
         self.Show()
 
     def init_ui(self):
-        icon_bundle = wx.IconBundle()
-        icon_bundle.AddIconFromFile(r'../resources/icon_512.ico', wx.BITMAP_TYPE_ANY)
-        self.SetIcons(icon_bundle)
+        # Suppress error messages about reading images from stream
+        with wx.LogNull():
+            icon_data = base64.b64decode(Images.accipyter_icon)
+            icon_bundle = wx.IconBundle()
+            icon_bundle.AddIconFromStream(wx.InputStream(cStringIO.StringIO(icon_data)))
+            self.SetIcons(icon_bundle)
 
         self.main_panel = wx.Panel(parent=self)
         dropTarget = FileDropTarget(self.main_panel)

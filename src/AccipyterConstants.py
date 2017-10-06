@@ -1,0 +1,4 @@
+import wx
+
+ADD_TORRENT_FROM_FILE_MENU_ID = wx.NewId()
+ADD_TORRENT_FROM_MAGNET_MENU_ID = wx.NewId()
